@@ -6,13 +6,12 @@ import sgeometry.Pos
 import sdraw.{World, Blue, White, Green}
 
 case class PotonWorld(centerX: Int, centerY: Int) extends World() {
-  val BallRadius = A.BallRadius                     // ボールの半径
+  val C = Config
+  val BallRadius = C.BallRadius                     // ボールの半径
   val MinX       = BallRadius + 10                  // X座標の最小値（これ以上左に寄ると左の壁に衝突）
-  val MaxX       = A.WorldWidth  - BallRadius - 10  // X座標の最大値（これ以上、右に寄ると右の壁に衝突）
-  val MaxY       = A.WorldHeight - BallRadius * 2   // Y座標の最大値（これ以上、落ちると画面から消える）
+  val MaxX       = C.WorldWidth  - BallRadius - 10  // X座標の最大値（これ以上、右に寄ると右の壁に衝突）
+  val MaxY       = C.WorldHeight - BallRadius * 2   // Y座標の最大値（これ以上、落ちると画面から消える）
   val HoleX      = 200                              // 穴の中心のX座標
-
-  println("* ")
 
   def draw(): Boolean = {
     canvas.drawRect(Pos(0, 0), canvas.width, canvas.height, White)    // 画面消去
@@ -28,7 +27,6 @@ case class PotonWorld(centerX: Int, centerY: Int) extends World() {
   }
 
   def tick(): World = {
-    println(". ")
     PotonWorld(centerX, min(centerY + 5, MaxY))
   }
 
@@ -45,11 +43,14 @@ case class PotonWorld(centerX: Int, centerY: Int) extends World() {
   }
 }
 
-// Run this app from sbt: [project lxz; runMain poton.A]
-object A extends App {
+object Config {
   val BallRadius  =  50
   val WorldWidth  = 800
   val WorldHeight = 600
+}
 
-  PotonWorld(WorldWidth / 2, BallRadius * 2).bigBang(WorldWidth, WorldHeight, 0.1)
+// Run this app from sbt: [project lxz; runMain poton.A]
+object A extends App {
+  val world = PotonWorld(Config.WorldWidth / 2, Config.BallRadius * 2)
+  world.bigBang(Config.WorldWidth, Config.WorldHeight, 0.1)
 }
