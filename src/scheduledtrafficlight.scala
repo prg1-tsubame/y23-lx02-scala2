@@ -4,6 +4,8 @@ import sgeometry.Pos
 import sdraw.{World, Color, Red, Green, Yellow}
 
 case class ScheduledLight(color: Color, waitFor: Int) extends World() {
+   val C = Config
+
   /**
    * 信号を描画する。円を塗り潰しているだけ。
    **/
@@ -19,9 +21,9 @@ case class ScheduledLight(color: Color, waitFor: Int) extends World() {
   def tick(): World = {
     println((color, waitFor))
     (color, waitFor) match {
-      case (Red,    1)  => ScheduledLight(Green,  A.SECS_FOR_GREEN)
-      case (Green,  1)  => ScheduledLight(Yellow, A.SECS_FOR_YELLOW)
-      case (Yellow, 1)  => ScheduledLight(Red,    A.SECS_FOR_RED)
+      case (Red,    1)  => ScheduledLight(Green,  C.SECS_FOR_GREEN)
+      case (Green,  1)  => ScheduledLight(Yellow, C.SECS_FOR_YELLOW)
+      case (Yellow, 1)  => ScheduledLight(Red,    C.SECS_FOR_RED)
       case _            => ScheduledLight(color,  waitFor - 1)
     }
   }
@@ -34,10 +36,12 @@ case class ScheduledLight(color: Color, waitFor: Int) extends World() {
   def keyEvent(key: String): World = { ScheduledLight(color, waitFor) }
 }
 
-object A extends App {
+object Config {
   val SECS_FOR_RED    = 7
   val SECS_FOR_GREEN  = 5
   val SECS_FOR_YELLOW = 2
+}
 
-  ScheduledLight(Red, SECS_FOR_RED).bigBang(300, 300, 1)
+object Main extends App {
+  ScheduledLight(Red, Config.SECS_FOR_RED).bigBang(300, 300, 1)
 }
